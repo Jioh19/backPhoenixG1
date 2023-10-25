@@ -238,5 +238,13 @@
       "rate": 3.6,
       "count": 145
     }
+  },
+  {
+    "id": 21,
+    "title": "Nuevo producto",
+    "price": 49.99,
+    "description": "Este es un nuevo super producto",
+    "image": "https://i.pravatar.cc",
+    "category": "cosa"
   }
 ]
