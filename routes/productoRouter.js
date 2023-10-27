@@ -1,6 +1,7 @@
 const express = require('express');
 const productoRouter = express.Router();
 const fs = require('fs');
+const verifyToken = require('../middleware/verifyToken');
 const {
 	crearProducto,
 	obtenerDetalleProducto,
@@ -12,137 +13,64 @@ let listaProducts = [];
 
 const URL = 'https://fakestoreapi.com/products';
 
-const loader = async () => {
-	try {
-		const productsJson = fs.readFileSync('./DB/products.json');
-		if (productsJson == '') {
-			throw new Error('Empty');
-		}
-		listaProducts = await JSON.parse(productsJson);
-	} catch (error) {
-		if (error.code === 'ENOENT' || error.message === 'Empty') {
-			fetch(URL)
-				.then((res) => res.json())
-				.then((json) => {
-					listaProducts = json;
-					fs.writeFileSync(
-						'./DB/products.json',
-						JSON.stringify(listaProducts, null, 2)
-					);
-				})
-				.catch((err) => res.send(err));
-		}
-	}
-};
-
 productoRouter.post('/', async (req, res) => {
 	// Implementa la lógica para crear un producto
-	if (listaProducts.length === 0) {
-		await loader();
-	}
 	const body = req.body;
+	const { title, price, description, category, image } = body;
 	console.log(body);
-	const product = {
-		...body,
-		id: Number(listaProducts[listaProducts.length - 1].id) + 1,
-	};
-	listaProducts.push(product);
-	fs.writeFileSync(
-		'./DB/products.json',
-		JSON.stringify(listaProducts, null, 2)
-	);
-	return res.status(201).json(product);
+	if (!(title && price && description && category && image)) {
+		console.log('entro');
+		return res.status(400).send('Todos los datos son requeridos');
+	}
+
+	const producto = await crearProducto(req.body);
+	if (producto.code == 201) {
+		return res.status(201).json(producto.producto);
+	} else return res.status(400).message(producto.message);
 });
 
 productoRouter.get('/:id', async (req, res) => {
 	// Implementa la lógica para obtener el detalle de un producto
-	if (listaProducts.length === 0) {
-		await loader();
-	}
 
 	const id = req.params.id;
-	const product = listaProducts.filter((prod) => prod.id == id);
-	if (product == '') {
-		return res.status(404).json();
+	const product = await obtenerDetalleProducto(id);
+
+	if (product.code === 200) {
+		return res.status(product.code).json(product.product);
 	}
-	return res.status(200).json(product);
+	return res.status(product.code).send(product.message);
 });
 
 productoRouter.get('/', async (req, res) => {
 	// Implementa la lógica para obtener todos los productos
-	try {
-		const productsJson = fs.readFileSync('./DB/products.json');
-		if (productsJson == '') {
-			throw new Error('Empty');
-		}
-		listaProducts = JSON.parse(productsJson);
 
-		return res.status(200).json(listaProducts);
-	} catch (error) {
-		if (error.code === 'ENOENT' || error.message === 'Empty') {
-			fetch(URL)
-				.then((res) => res.json())
-				.then((json) => {
-					listaProducts = json;
-					fs.writeFileSync(
-						'./DB/products.json',
-						JSON.stringify(listaProducts, null, 2)
-					);
-					return res.status(200).json(listaProducts);
-				})
-				.catch((err) => res.send(err));
-		}
-	}
+	const productos = await obtenerProductos(req.body);
+	if (productos.code === 200) {
+		return res.status(200).json(productos.productos);
+	} else return res.status(400).send(productos.message);
 });
 
 productoRouter.put('/:id', async (req, res) => {
 	// Implementa la lógica para modificar un producto
-	if (listaProducts.length === 0) {
-		await loader();
-	}
 
 	const id = req.params.id;
 	const body = req.body;
-	const product = listaProducts.find((prod) => prod.id == id);
-	const index = listaProducts.findIndex((prod) => prod.id == id);
-	console.log(index);
-	body.id = product.id;
-	body.title ||= product.title;
-	body.price ||= product.price;
-	body.description ||= product.description;
-	body.image ||= product.image;
-	body.category ||= product.category;
-	body.rating ||= product.rating;
-	listaProducts[index] = body;
-	console.log(body);
-	if (product === undefined) {
-		return res.status(404).json();
+
+	const producto = await modificarProducto(id, body);
+
+	if (producto.code === 200) {
+		return res.status(200).json(producto.product);
 	}
-	fs.writeFileSync(
-		'./DB/products.json',
-		JSON.stringify(listaProducts, null, 2)
-	);
-	return res.status(200).json(body);
+	return res.status(producto.code).send(producto.message);
 });
 
 productoRouter.delete('/:id', async (req, res) => {
 	// Implementa la lógica para borrar un producto
-	if (listaProducts.length === 0) {
-		await loader();
-	}
 
 	const id = req.params.id;
-	const product = listaProducts.filter((prod) => prod.id == id);
-	listaProducts = listaProducts.filter((prod) => prod.id != id);
+	const producto = await borrarProducto(id);
 
-	if (product == '') {
-		return res.status(404).json();
-	}
-	fs.writeFileSync(
-		'./DB/products.json',
-		JSON.stringify(listaProducts, null, 2)
-	);
-	return res.status(204).json(product);
+	return res.status(producto.code).send(producto.message);
 });
 
 module.exports = { productoRouter };
