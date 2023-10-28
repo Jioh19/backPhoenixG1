@@ -60,13 +60,9 @@ authRouter.post('/login', async (req, res) => {
 		const respuesta = await login(username, password);
 		console.log(respuesta);
 		if (respuesta.code === 200) {
-			return res.status(respuesta.code).send(respuesta.token);
+			return res.status(respuesta.code).json(respuesta);
 		}
-		return res.status(respuesta.code).send(respuesta.message);
-
-		// Impresión por el terminal del Token generado para el usuario
-		console.log('Usuario: ' + username);
-		return res.status(200);
+		return res.status(respuesta.code).json(respuesta);
 	} catch (error) {
 		console.log(error);
 	}

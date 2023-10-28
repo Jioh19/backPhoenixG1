@@ -1,5 +1,6 @@
 const express = require('express');
 const carritoRouter = express.Router();
+const verifyToken = require('../middleware/verifyToken');
 const {
 	obtenerCarrito,
 	agregarProductoAlCarrito,
@@ -7,11 +8,14 @@ const {
 	modificarProductoAlCarrito,
 } = require('../funciones');
 
-carritoRouter.get('/:idUsuario', async (req, res) => {
+carritoRouter.get('/', verifyToken, async (req, res) => {
 	console.log('CARRITO');
 	// Implementa la lógica para obtener el carrito de un usuario
-	const id = req.params.idUsuario;
-	const carrito = await obtenerCarrito(id);
+	//const id = req.params.idUsuario;
+	const token =
+		req.body.token || req.query.token || req.headers['x-access-token'];
+
+	const carrito = await obtenerCarrito(token);
 
 	if (carrito === undefined) {
 		return res.status(418).send('Soy una tetera');
@@ -19,11 +23,12 @@ carritoRouter.get('/:idUsuario', async (req, res) => {
 	return res.status(200).json(carrito);
 });
 
-carritoRouter.post('/:idUsuario/agregar', async (req, res) => {
+carritoRouter.post('/agregar', async (req, res) => {
 	// Implementa la lógica para agregar un producto al carrito de un usuario
-	const id = req.params.idUsuario;
+	const token =
+		req.body.token || req.query.token || req.headers['x-access-token'];
 	const producto = req.body;
-	const carrito = await agregarProductoAlCarrito(id, producto);
+	const carrito = await agregarProductoAlCarrito(token, producto);
 
 	if (carrito === undefined) {
 		return res.status(418).send('Soy una tetera');
@@ -31,11 +36,13 @@ carritoRouter.post('/:idUsuario/agregar', async (req, res) => {
 	return res.status(200).json(carrito);
 });
 
-carritoRouter.delete('/:idUsuario/eliminar/:idProducto', async (req, res) => {
+carritoRouter.delete('/eliminar/:idProducto', async (req, res) => {
 	// Implementa la lógica para eliminar un producto del carrito de un usuario
-	const id = req.params.idUsuario;
-	const producto = req.body;
-	const carrito = await eliminarProductoAlCarrito(id, producto);
+	const token =
+		req.body.token || req.query.token || req.headers['x-access-token'];
+	const producto = req.params.idProducto;
+	console.log('funcion delete: ', producto);
+	const carrito = await eliminarProductoAlCarrito(token, producto);
 
 	if (carrito === undefined) {
 		return res.status(418).send('Soy una tetera');

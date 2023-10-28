@@ -18,7 +18,7 @@ const verifyToken = (req, res, next) => {
 	} catch (err) {
 		return res.status(401).json({
 			status: 401,
-			message: 'Token no valido, acceso denegado',
+			message: 'Invalid Token denied access',
 		});
 	}
 	return next();

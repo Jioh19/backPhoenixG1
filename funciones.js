@@ -3,6 +3,12 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 //AUTH
+parseJwt = function (token) {
+	var base64Url = token.split('.')[1];
+	var base64 = base64Url.replace('-', '+').replace('_', '/');
+	return JSON.parse(atob(base64));
+};
+
 async function register(dataRegistro) {
 	try {
 		const usuarios = await JSON.parse(fs.readFileSync('./DB/users.json'));
@@ -270,7 +276,10 @@ async function eliminarUsuario(id) {
 }
 
 //USUARIO - CARRITO
-async function obtenerCarrito(idUsuario) {
+
+async function obtenerCarrito(token) {
+	const idUsuario = parseJwt(token).id;
+	console.log(idUsuario);
 	try {
 		const carritos = await JSON.parse(fs.readFileSync('./DB/carts.json'));
 		let carrito = await carritos.find((cart) => cart.id == idUsuario);
@@ -288,7 +297,9 @@ async function obtenerCarrito(idUsuario) {
 		return;
 	}
 }
-async function agregarProductoAlCarrito(idUsuario, producto) {
+async function agregarProductoAlCarrito(token, producto) {
+	const idUsuario = parseJwt(token).id;
+	console.log(idUsuario);
 	try {
 		const carritos = await JSON.parse(fs.readFileSync('./DB/carts.json'));
 		let carrito = await carritos.find((cart) => cart.id == idUsuario);
@@ -308,13 +319,18 @@ async function agregarProductoAlCarrito(idUsuario, producto) {
 	}
 }
 
-async function eliminarProductoAlCarrito(idUsuario, idProducto) {
+async function eliminarProductoAlCarrito(token, idProducto) {
+	const idUsuario = parseJwt(token).id;
+	console.log(idUsuario, idProducto);
 	try {
 		const carritos = await JSON.parse(fs.readFileSync('./DB/carts.json'));
-		const carrito = await carritos.find((cart) => cart.id == idUsuario);
+		console.log(carritos);
+		let carrito = await carritos.find((cart) => cart.id == idUsuario);
+		console.log('funcion delete: carrito', carrito);
 		carrito.productos = carrito.productos.filter(
-			(prod) => prod.id == idProducto
+			(prod) => prod.idCart != idProducto
 		);
+
 		fs.writeFileSync('./DB/carts.json', JSON.stringify(carritos, null, 2));
 		return carrito;
 	} catch (error) {

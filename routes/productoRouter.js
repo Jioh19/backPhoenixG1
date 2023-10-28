@@ -1,6 +1,5 @@
 const express = require('express');
 const productoRouter = express.Router();
-const fs = require('fs');
 const verifyToken = require('../middleware/verifyToken');
 const {
 	crearProducto,
@@ -9,9 +8,6 @@ const {
 	modificarProducto,
 	borrarProducto,
 } = require('../funciones');
-let listaProducts = [];
-
-const URL = 'https://fakestoreapi.com/products';
 
 productoRouter.post('/', async (req, res) => {
 	// Implementa la lógica para crear un producto

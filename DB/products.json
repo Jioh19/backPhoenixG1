@@ -242,5 +242,37 @@
     "category": "Miscelaneo",
     "image": "https://i.pravatar.cc",
     "id": 21
+  },
+  {
+    "id": 22,
+    "title": "Nuevo producto",
+    "price": 49.99,
+    "description": "Este es un nuevo super producto",
+    "image": "https://i.pravatar.cc",
+    "category": "cosa"
+  },
+  {
+    "id": 23,
+    "title": "Nuevo producto",
+    "price": 49.99,
+    "description": "Este es un nuevo super producto",
+    "image": "https://i.pravatar.cc",
+    "category": "cosa"
+  },
+  {
+    "id": 24,
+    "title": "Nuevo producto",
+    "price": 49.99,
+    "description": "Este es un nuevo super producto",
+    "image": "https://i.pravatar.cc",
+    "category": "cosa"
+  },
+  {
+    "id": 25,
+    "title": "Nuevo producto",
+    "price": 49.99,
+    "description": "Este es un nuevo super producto",
+    "image": "https://i.pravatar.cc",
+    "category": "cosa"
   }
 ]
