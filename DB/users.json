@@ -94,5 +94,29 @@
     "zipcode": "123",
     "password": "$2b$10$yKA7HVlv/X7kYCA5qQmHuuIv4wkBPGuRv8.cuEnETuYMQ3/64TtWO",
     "id": 7
+  },
+  {
+    "id": 8,
+    "email": "jioh1982@gmail.com",
+    "username": "admin",
+    "firstName": "ewq",
+    "lastName": "yui",
+    "city": "yui",
+    "street": "yui",
+    "number": "123",
+    "zipcode": "123",
+    "password": "$2b$10$9zn0Uz/ro9IoueHW.iLYY.8LwLZdhH0c/EU1NKZtbFX2YD.2Ivs3."
+  },
+  {
+    "email": "jioh1982@gmail.com",
+    "username": "super",
+    "firstName": "ewq",
+    "lastName": "yui",
+    "city": "yui",
+    "street": "yui",
+    "number": "123",
+    "zipcode": "123",
+    "password": "$2b$10$V3tiOXQydcpZIPR2ptA1duBweJ30ohm1bZuZJto9A03/1qeWJN4vO",
+    "id": 9
   }
 ]

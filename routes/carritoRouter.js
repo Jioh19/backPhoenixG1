@@ -23,7 +23,7 @@ carritoRouter.get('/', verifyToken, async (req, res) => {
 	return res.status(200).json(carrito);
 });
 
-carritoRouter.post('/agregar', async (req, res) => {
+carritoRouter.post('/agregar', verifyToken, async (req, res) => {
 	// Implementa la lógica para agregar un producto al carrito de un usuario
 	const token =
 		req.body.token || req.query.token || req.headers['x-access-token'];
@@ -36,7 +36,7 @@ carritoRouter.post('/agregar', async (req, res) => {
 	return res.status(200).json(carrito);
 });
 
-carritoRouter.delete('/eliminar/:idProducto', async (req, res) => {
+carritoRouter.delete('/eliminar/:idProducto', verifyToken, async (req, res) => {
 	// Implementa la lógica para eliminar un producto del carrito de un usuario
 	const token =
 		req.body.token || req.query.token || req.headers['x-access-token'];
@@ -50,8 +50,12 @@ carritoRouter.delete('/eliminar/:idProducto', async (req, res) => {
 	return res.status(200).json(carrito);
 });
 
-carritoRouter.put('/:idUsuario/modificar/:idProducto', async (req, res) => {
-	// Implementa la lógica para modificar un producto en el carrito de un usuario
-});
+carritoRouter.put(
+	'/:idUsuario/modificar/:idProducto',
+	verifyToken,
+	async (req, res) => {
+		// Implementa la lógica para modificar un producto en el carrito de un usuario
+	}
+);
 
 module.exports = { carritoRouter };
